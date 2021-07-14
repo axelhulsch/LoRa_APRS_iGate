@@ -16,7 +16,9 @@
 #include "TaskOTA.h"
 #include "TaskRouter.h"
 #include "TaskWifi.h"
+#include "TaskGPS.h"
 #include "project_configuration.h"
+
 
 #define VERSION "21.25.0"
 
@@ -26,6 +28,7 @@ String create_long_aprs(double lng);
 TaskQueue<std::shared_ptr<APRSMessage>> toAprsIs;
 TaskQueue<std::shared_ptr<APRSMessage>> fromModem;
 TaskQueue<std::shared_ptr<APRSMessage>> toModem;
+TaskQueue<std::shared_ptr<APRSMessage>> fromGPS;
 
 System        LoRaSystem;
 Configuration userConfig;
@@ -37,8 +40,9 @@ WifiTask    wifiTask;
 OTATask     otaTask;
 NTPTask     ntpTask;
 FTPTask     ftpTask;
+GPSTask     gpsTask;
 AprsIsTask  aprsIsTask(toAprsIs);
-RouterTask  routerTask(fromModem, toModem, toAprsIs);
+RouterTask  routerTask(fromModem, toModem, toAprsIs,gpsTask);
 
 void setup() {
   Serial.begin(115200);
@@ -46,6 +50,8 @@ void setup() {
   delay(500);
   logPrintlnI("LoRa APRS iGate by OE5BPA (Peter Buchegger)");
   logPrintlnI("Version: " VERSION);
+
+
 
   std::list<BoardConfig const *> boardConfigs;
   boardConfigs.push_back(&TTGO_LORA32_V1);
@@ -98,7 +104,8 @@ void setup() {
   LoRaSystem.getTaskManager().addTask(&displayTask);
   LoRaSystem.getTaskManager().addTask(&modemTask);
   LoRaSystem.getTaskManager().addTask(&routerTask);
-
+  LoRaSystem.getTaskManager().addTask(&gpsTask);
+  
   if (userConfig.aprs_is.active) {
     if (boardConfig->Type == eETH_BOARD) {
       LoRaSystem.getTaskManager().addAlwaysRunTask(&ethTask);

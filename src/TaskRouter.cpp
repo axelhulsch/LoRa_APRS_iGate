@@ -5,11 +5,12 @@
 #include "Task.h"
 #include "TaskRouter.h"
 #include "project_configuration.h"
+#include "TaskGPS.h"
 
 String create_lat_aprs(double lat);
 String create_long_aprs(double lng);
 
-RouterTask::RouterTask(TaskQueue<std::shared_ptr<APRSMessage>> &fromModem, TaskQueue<std::shared_ptr<APRSMessage>> &toModem, TaskQueue<std::shared_ptr<APRSMessage>> &toAprsIs) : Task(TASK_ROUTER, TaskRouter), _fromModem(fromModem), _toModem(toModem), _toAprsIs(toAprsIs) {
+RouterTask::RouterTask(TaskQueue<std::shared_ptr<APRSMessage>> &fromModem, TaskQueue<std::shared_ptr<APRSMessage>> &toModem, TaskQueue<std::shared_ptr<APRSMessage>> &toAprsIs,GPSTask &GPS) : Task(TASK_ROUTER, TaskRouter), _fromModem(fromModem), _toModem(toModem), _toAprsIs(toAprsIs), _GPS(GPS) {
 }
 
 RouterTask::~RouterTask() {
@@ -22,10 +23,6 @@ bool RouterTask::setup(System &system) {
   _beaconMsg = std::shared_ptr<APRSMessage>(new APRSMessage());
   _beaconMsg->setSource(system.getUserConfig()->callsign);
   _beaconMsg->setDestination("APLG01");
-  String lat = create_lat_aprs(system.getUserConfig()->beacon.positionLatitude);
-  String lng = create_long_aprs(system.getUserConfig()->beacon.positionLongitude);
-  _beaconMsg->getBody()->setData(String("=") + lat + "L" + lng + "&" + system.getUserConfig()->beacon.message);
-
   return true;
 }
 
@@ -81,12 +78,26 @@ bool RouterTask::loop(System &system) {
     logPrintD("[" + timeString() + "] ");
     logPrintlnD(_beaconMsg->encode());
 
+    String lat,lng;
+    if (!_GPS.isValid){
+     lat = create_lat_aprs(system.getUserConfig()->beacon.positionLatitude);
+     lng = create_long_aprs(system.getUserConfig()->beacon.positionLongitude);
+    }
+    else
+    {
+      lat=create_lat_aprs(_GPS.lat);
+      lng=create_long_aprs(_GPS.lng);
+    }
+    _beaconMsg->getBody()->setData(String("=") + lat + "L" + lng + "&" + system.getUserConfig()->beacon.message);
+
+
     if (system.getUserConfig()->aprs_is.active)
       _toAprsIs.addElement(_beaconMsg);
 
     if (system.getUserConfig()->digi.beacon) {
       _toModem.addElement(_beaconMsg);
     }
+
 
     system.getDisplay().addFrame(std::shared_ptr<DisplayFrame>(new TextFrame("BEACON", _beaconMsg->toString())));
 

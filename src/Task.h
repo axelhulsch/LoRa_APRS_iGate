@@ -11,6 +11,7 @@ enum TaskNames
   TaskOta,
   TaskWifi,
   TaskRouter,
+  TaskGps,
   TaskSize,
 };
 
@@ -22,5 +23,6 @@ enum TaskNames
 #define TASK_OTA     "OTATask"
 #define TASK_WIFI    "WifiTask"
 #define TASK_ROUTER  "RouterTask"
+#define TASK_GPS     "GPSTask"
 
 #endif
