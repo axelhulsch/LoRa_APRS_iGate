@@ -27,6 +27,7 @@ RouterTask::~RouterTask() {
 }
 
 bool RouterTask::setup(System &system) {
+
    Wire.begin(21,22);                                                      // initialize I2C that connects to sensor
    BMESensor.begin();  
    sendPos=true;
@@ -88,6 +89,7 @@ bool RouterTask::loop(System &system) {
 
   // check for beacon
   if (_beacon_timer.check()) {
+  
     BMESensor.refresh();                                                  // read current sensor data
     logPrintlnD(String(BMESensor.temperature));
 
@@ -105,7 +107,8 @@ bool RouterTask::loop(System &system) {
     if (sendPos)
     {
       _beaconMsg->getBody()->setData(String("=") + lat + "L" + lng  + "&" + system.getUserConfig()->beacon.message);
-      sendPos=false;
+      if (Wire.available())
+        sendPos=false;
     }
     else
     {
