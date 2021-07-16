@@ -7,7 +7,7 @@
 #include "TaskGPS.h"
 #include "project_configuration.h"
 
-static const int RXPin = 34, TXPin = 35;
+static const int RXPin = 34, TXPin = -1;
 static const uint32_t GPSBaud = 9600;
 
 // The TinyGPS++ object
@@ -97,19 +97,19 @@ bool GPSTask::loop(System &system) {
         lng=gps.location.lng();
         isValid=true;
         String sloc=String(lat)+","+String(lng);
-        logPrintlnI(sloc);
+ //       logPrintlnI(sloc);
         _stateInfo=sloc;
        
        }
 
-      if (gps.date.isValid()) {
+ /*     if (gps.date.isValid()) {
         logPrintI(String(gps.date.month()));
         logPrintI(F("/"));
         logPrintI(String(gps.date.day()));
         logPrintI(F("/"));
         logPrintlnI(String(gps.date.year()));
       }
-
+*/
       for (int i=0; i<4; ++i)
       {
         int no = atoi(satNumber[i].value());
