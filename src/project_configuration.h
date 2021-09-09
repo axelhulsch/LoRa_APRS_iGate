@@ -31,6 +31,18 @@ public:
     int    timeout;
   };
 
+  class Sensor {
+  public:
+    Sensor() : message("Weather Reporter, Info: github.com/axelhu/LoRa_APRS_iGate"),callsign("unkown"),ws980ip(""), positionLatitude(0.0), positionLongitude(0.0), timeout(15) {
+    }
+    String message;
+    String callsign;
+    String ws980ip;
+    double positionLatitude;
+    double positionLongitude;
+    int    timeout;
+  };
+
   class APRS_IS {
   public:
     APRS_IS() : active(true), server("euro.aprs2.net"), port(14580) {
@@ -95,6 +107,7 @@ public:
   String  callsign;
   Wifi    wifi;
   Beacon  beacon;
+  Sensor  sensor;
   APRS_IS aprs_is;
   Digi    digi;
   LoRa    lora;

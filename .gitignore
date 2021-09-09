@@ -5,3 +5,9 @@
 .vscode/ipch
 report.xml
 output
+data/is-cfg-DB0BOS.json
+data/is-cfg-DB0HRW.json
+data/is-cfg-dd4fl.json
+data/is-cfg-dl0odx.json
+data/is-cfg-do7ha-ap.json
+data/is-cfg.json

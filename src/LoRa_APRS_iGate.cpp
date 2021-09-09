@@ -17,6 +17,7 @@
 #include "TaskRouter.h"
 #include "TaskWifi.h"
 #include "TaskGPS.h"
+#include "TaskSensor.h"
 #include "project_configuration.h"
 
 
@@ -41,6 +42,7 @@ OTATask     otaTask;
 NTPTask     ntpTask;
 FTPTask     ftpTask;
 GPSTask     gpsTask;
+SensorTask  sensorTask(toAprsIs);
 AprsIsTask  aprsIsTask(toAprsIs);
 RouterTask  routerTask(fromModem, toModem, toAprsIs,gpsTask);
 
@@ -105,6 +107,7 @@ void setup() {
   LoRaSystem.getTaskManager().addTask(&modemTask);
   LoRaSystem.getTaskManager().addTask(&routerTask);
   LoRaSystem.getTaskManager().addTask(&gpsTask);
+  LoRaSystem.getTaskManager().addTask(&sensorTask);
   
   if (userConfig.aprs_is.active) {
     if (boardConfig->Type == eETH_BOARD) {

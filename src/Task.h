@@ -12,6 +12,7 @@ enum TaskNames
   TaskWifi,
   TaskRouter,
   TaskGps,
+  TaskSensor,
   TaskSize,
 };
 
@@ -24,5 +25,6 @@ enum TaskNames
 #define TASK_WIFI    "WifiTask"
 #define TASK_ROUTER  "RouterTask"
 #define TASK_GPS     "GPSTask"
+#define TASK_SENSOR   "SensorTask"
 
 #endif

@@ -20,6 +20,24 @@ void ProjectConfigurationManagement::readProjectConfiguration(DynamicJsonDocumen
   conf.beacon.positionLatitude  = data["beacon"]["position"]["latitude"] | 0.0;
   conf.beacon.positionLongitude = data["beacon"]["position"]["longitude"] | 0.0;
   conf.beacon.timeout           = data["beacon"]["timeout"] | 15;
+
+  if (data.containsKey("sensor") && data["sensor"].containsKey("callsign"))
+  {
+    conf.sensor.callsign = data["sensor"]["callsign"].as<String>();
+  }
+  if (data.containsKey("sensor") && data["sensor"].containsKey("message"))
+  {
+    conf.sensor.message = data["sensor"]["message"].as<String>();
+  }
+ if (data.containsKey("sensor") && data["sensor"].containsKey("ws980ip"))
+  {
+    conf.sensor.ws980ip = data["sensor"]["ws980ip"].as<String>();
+  }
+
+  conf.sensor.positionLatitude  = data["sensor"]["position"]["latitude"] | 0.0;
+  conf.sensor.positionLongitude = data["sensor"]["position"]["longitude"] | 0.0;
+  conf.sensor.timeout           = data["sensor"]["timeout"] | 15;
+
   conf.aprs_is.active           = data["aprs_is"]["active"] | true;
   if (data.containsKey("aprs_is") && data["aprs_is"].containsKey("passcode"))
     conf.aprs_is.passcode = data["aprs_is"]["passcode"].as<String>();
@@ -73,6 +91,12 @@ void ProjectConfigurationManagement::writeProjectConfiguration(Configuration &co
   data["beacon"]["position"]["latitude"]  = conf.beacon.positionLatitude;
   data["beacon"]["position"]["longitude"] = conf.beacon.positionLongitude;
   data["beacon"]["timeout"]               = conf.beacon.timeout;
+  data["sensor"]["callsign"]              = conf.sensor.callsign;
+  data["sensor"]["ws980ip"]               = conf.sensor.ws980ip;
+  data["sensor"]["message"]               = conf.sensor.message;
+  data["sensor"]["position"]["latitude"]  = conf.sensor.positionLatitude;
+  data["sensor"]["position"]["longitude"] = conf.sensor.positionLongitude;
+  data["sensor"]["timeout"]               = conf.sensor.timeout;
   data["aprs_is"]["active"]               = conf.aprs_is.active;
   data["aprs_is"]["passcode"]             = conf.aprs_is.passcode;
   data["aprs_is"]["server"]               = conf.aprs_is.server;
