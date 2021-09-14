@@ -2,6 +2,7 @@
 
 #include <TimeLib.h>
 
+
 #include "Task.h"
 #include "TaskSensor.h"
 #include "project_configuration.h"
@@ -63,14 +64,39 @@ bool SensorTask::loop(System &system) {
       uint8_t readbuffer[200];
       while (ws980_client.available()) {
         readbuffer[i++] = static_cast<uint8_t>(ws980_client.read());
+        logPrintE(String(readbuffer[i-1],HEX));
       }
-     
+
       // Close the connection
       logPrintlnE("closing connection");
       ws980_client.stop();
 
+
+      logPrintlnE(" ");
       if (i<81) return false;
 
+      byte sum=0;
+      for(int s=5;s<=79;s++){
+        sum+=readbuffer[s];
+      }
+      logPrintE("sum = ");
+      logPrintlnE(String(sum,HEX));
+      if (sum!=readbuffer[80]){
+        logPrintlnE("WS980 checksum Error");
+      }
+      
+      sum=0;
+      for(int s=2;s<=80;s++){
+        sum+=readbuffer[s];
+      }
+      if (sum!=readbuffer[81]){
+        logPrintlnE("WS980 checksum Error");
+      }
+      logPrintE("sum = ");
+      logPrintlnE(String(sum,HEX));
+
+
+    
 
       String lat,lng;
       lat = create_lat_aprs(system.getUserConfig()->sensor.positionLatitude);
