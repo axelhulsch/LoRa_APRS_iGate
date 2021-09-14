@@ -109,10 +109,27 @@ bool SensorTask::loop(System &system) {
       message +="t"; 
       if(temp<100) { message += "0"; }
       if(temp<10) { message += "0"; }
-      message += String(temp,0);
+      s = String(temp,0);s.replace(" ","");
+      message += s;
 
-      message +="r000";
-      message +="p000";
+      float Rain=static_cast<int32_t>(readbuffer[41]*0x1000000+readbuffer[42]*0x10000+readbuffer[43]*0x100+readbuffer[44]);
+      float rain = Rain*0.3937;
+      message +="r"; 
+      if(rain<100) { message += "0"; }
+      if(rain<10) { message += "0"; }
+      s = String(rain,0);s.replace(" ","");
+      message += s;
+      
+      Rain=static_cast<int32_t>(readbuffer[46]*0x1000000+readbuffer[47]*0x10000+readbuffer[48]*0x100+readbuffer[49]);
+      rain = Rain*0.3937;
+      message +="p"; 
+      if(rain<100) { message += "0"; }
+      if(rain<10) { message += "0"; }
+      s = String(rain,0);s.replace(" ","");
+      message += s;
+
+      //message +="r000";
+      //message +="p000";
       
  //     message += "h51b10218";
       float humi = readbuffer[24];
