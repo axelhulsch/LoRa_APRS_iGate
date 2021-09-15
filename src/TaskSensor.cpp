@@ -83,6 +83,7 @@ bool SensorTask::loop(System &system) {
       logPrintlnE(String(sum,HEX));
       if (sum!=readbuffer[80]){
         logPrintlnE("WS980 checksum Error");
+        return false;
       }
       
       sum=0;
@@ -91,6 +92,7 @@ bool SensorTask::loop(System &system) {
       }
       if (sum!=readbuffer[81]){
         logPrintlnE("WS980 checksum Error");
+        return false;
       }
       logPrintE("sum = ");
       logPrintlnE(String(sum,HEX));
